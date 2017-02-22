@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.css">
+
+    <!-- jQuery library -->
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    
+    <script src="scripts/popup.js"></script>
+
+    
+</head>
+<body>
+   <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#share">Поделиться</a></li>
+      <li><a data-toggle="tab" href="#friends_tab">Адресаты</a></li>
+      
+    </ul>
+    
+    <div class="tab-content">
+      <div id="share" class="tab-pane fade in active">
+        
+            <h3 class="text-center">Будь топовым!</h3>
+            <img src="" alt="">
+        <div>
+           <div class="form-group">
+               <input id="shared-url" type="text" class="form-control" name="msg" placeholder="ссылка на кек">
+           </div>
+           <div class="form-group">
+               
+           </div>
+           <div class="form-group">
+               <div id="submit" class="btn btn-primary btn-block">Отправить рофлянку</div>
+           </div>
+            
+        </div>
+      </div>
+      <div id="friends_tab" class="tab-pane fade">
+        
+        <div id="friends">
+           <div id="friend_li_shema" class="row" style="display:none">
+               <div class="col-xs-4">
+               <img src="images/imageinfo-16.png" alt="">
+               </div>
+               <div class="col-xs-8">
+                   <p>Имя</p>
+                   <p>фамилия</p>
+               </div>
+           </div>
+            
+        </div>
+      </div>
+
+    </div>
+   
+    
+    
+</body>
+</html>
