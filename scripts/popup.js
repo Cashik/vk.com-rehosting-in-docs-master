@@ -1,41 +1,70 @@
-var port = chrome.extension.connect({
-    name: "Sample Communication"
-});
+window.onload = function () {
+    var port = chrome.extension.connect({
+        name: "Sample Communication"
+    });
 
-port.postMessage("Hi BackGround");
-port.onMessage.addListener(function (response) {
+    port.postMessage({
+        message: "getFriends"
+    });
+    port.postMessage({
+        message: "getAccounts"
+    });
+    port.onMessage.addListener(function (msg) {
+        switch (msg.message) {
+        case "returnFriends":
+            {
+                var friends_list = document.getElementById("friends");
+                var friend_template = document.getElementById("friend_template");
+                msg.friends.forEach(function (friend) {
+                    var friend_li = Mustache.render(friend_template.innerHTML, friend);
+                    friends_list.innerHTML += (friend_li);
 
-    var friends_list = document.getElementById("friends");
-    var friend_shema = document.getElementById("friend_li_shema");
+                });
+                //console.log(response);
+                $(".check_friend").change(function (target) {
+                    var full_name = this.value.split(' ').slice(0, 2).join(' '),
+                        user_id = this.value.split(' ')[2];
+                    var msg = {
+                        message: "ChangeFriend",
+                        user_full_name: full_name,
+                        user_id: user_id,
+                        checked: this.checked,
 
-    response.response.items.forEach(function (friend) {
-        var fname = document.createElement("p");
-        var sname = document.createElement("p");
-        fname.innerHTML = friend.first_name;
-        sname.innerHTML = friend.last_name;
+                    }
 
-        var avatar = document.createElement("img");
-        avatar.src = friend.photo_50;
-        avatar.classList.add("img-circle");
+                    port.postMessage(msg);
+                });
+            }
+            break;
+        case "returnAccounts":
+            {
+                var accounts_list = document.getElementById("accounts");
+                var account_template = document.getElementById("account_template");
+                msg.accounts.forEach(function (account) {
+                    var account_li = Mustache.render(account_template.innerHTML, account);
+                    accounts_list.innerHTML += (account_li);
 
-        var d1 = document.createElement("div");
-        var d2 = document.createElement("div");
-        var d3 = document.createElement("div");
-        d1.classList.add("col-xs-3");
-        d2.classList.add("col-xs-6");
-        d3.classList.add("col-xs-3");
+                });
+                //console.log(response);
+                $(".check_account").change(function (target) {
+                    user_id = this.value;
+                    var msg = {
+                        message: "SetCurrentUser",
+                        user_id: user_id,
+                    }
 
-        d1.appendChild(avatar);
-        d2.appendChild(fname);
-        d2.appendChild(sname);
+                    port.postMessage(msg);
+                });
+            }
+            break;
 
-        var friend_li = document.createElement("div");
-        friend_li.classList.add("row");
-        friend_li.appendChild(d1);
-        friend_li.appendChild(d2);
-        friend_li.appendChild(d3);
+        }
 
-        friends_list.appendChild(friend_li);
 
     });
-});
+    $("#refresh_user").click(function () {
+        port.postMessage({
+            message: "refreshUser"
+        });
+    });
+}

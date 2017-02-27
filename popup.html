@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.css">
 
@@ -13,56 +14,86 @@
     <!-- Latest compiled JavaScript -->
     <script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="style.css">
-    
-    
+
+
+
+    <script src="scripts/mustache.js"></script>
     <script src="scripts/popup.js"></script>
 
-    
+
 </head>
+
 <body>
-   <ul class="nav nav-tabs">
-      <li class="active"><a data-toggle="tab" href="#share">Поделиться</a></li>
-      <li><a data-toggle="tab" href="#friends_tab">Адресаты</a></li>
-      
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#accounts_tab">Аккаунт</a></li>
+        <li><a data-toggle="tab" href="#friends_tab">Адресаты</a></li>
+        <li><a data-toggle="tab" href="#settings_tab">Настройки</a></li>
+
     </ul>
-    
+
     <div class="tab-content">
-      <div id="share" class="tab-pane fade in active">
-        
-            <h3 class="text-center">Будь топовым!</h3>
-            <img src="" alt="">
-        <div>
-           <div class="form-group">
-               <input id="shared-url" type="text" class="form-control" name="msg" placeholder="ссылка на кек">
-           </div>
-           <div class="form-group">
-               
-           </div>
-           <div class="form-group">
-               <div id="submit" class="btn btn-primary btn-block">Отправить рофлянку</div>
-           </div>
-            
+        <div id="accounts_tab" class="tab-pane fade in active">
+            <button id="refresh_user" type="button" class="btn btn-primary btn-block"> Добавить текущий аккаунт </button>
+            <div id="accounts">
+                <script id="account_template" type="text/x-custom-template">
+                    <label>
+                        <div class="account row">
+                            <!-- <div class="col-xs-3">
+                                <img src="{{photo_50}}" class="img-circle">
+                            </div> -->
+                            <div class="col-xs-6">
+                                <p>{{first_name}}</p>
+                                <p>{{last_name}}</p>
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="check_account" type="radio" name="account_radio" value="{{id}}" style="width:50px;height:50px" {{checked}}>
+
+                            </div>
+                        </div>
+                    </label>
+                    <hr>
+                </script>
+
+            </div>
+
         </div>
-      </div>
-      <div id="friends_tab" class="tab-pane fade">
-        
-        <div id="friends">
-           <div id="friend_li_shema" class="row" style="display:none">
-               <div class="col-xs-4">
-               <img src="images/imageinfo-16.png" alt="">
-               </div>
-               <div class="col-xs-8">
-                   <p>Имя</p>
-                   <p>фамилия</p>
-               </div>
-           </div>
-            
+        <div id="friends_tab" class="tab-pane fade">
+
+            <div id="friends">
+                <script id="friend_template" type="text/x-custom-template">
+                    <label>
+                        <div class="friend row">
+                            <div class="col-xs-3">
+                                <img src="{{photo_50}}" class="img-circle">
+                            </div>
+                            <div class="col-xs-6">
+                                <p>{{first_name}}</p>
+                                <p>{{last_name}}</p>
+                            </div>
+                            <div class="col-xs-3">
+                                <input class="check_friend" type="checkbox" value="{{last_name}} {{first_name}} {{id}}" style="width:50px;height:50px" {{checked}}>
+
+                            </div>
+                        </div>
+                    </label>
+                    <hr>
+
+                </script>
+
+
+            </div>
+
         </div>
-      </div>
+        <div id="settings_tab" class="tab-pane fade">
+
+            
+
+        </div>
 
     </div>
-   
-    
-    
+
+
+
 </body>
+
 </html>

@@ -1,0 +1,40 @@
+body {
+    min-width: 300px;
+    overflow: auto;
+}
+
+.tab-pane {}
+
+#friends {
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+.friend {
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+hr {
+    margin: 0;
+}
+
+label {
+    display: block;
+    margin: 0;
+    transition: 0.1s all;
+}
+
+label:hover {
+    background-color: #dff0d8;
+    transition: 0.3s all;
+}
+
+label:checked {
+    width: 30px;
+    transition: 0.3s all;
+}
+
+.row {
+    margin: 0;
+}
