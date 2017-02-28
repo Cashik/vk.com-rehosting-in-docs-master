@@ -22,21 +22,32 @@ chrome.extension.onConnect.addListener(function (port) {
                     'users_dic',
                     'vk_user_id'
                 ], function (items) {
-                    var friends = getFriends(items.vk_user_id, "photo_50", items.users_dic[items.vk_user_id].vkaccess_token);
-                    var mod_friends = friends.map(function (friend) {
-                        items.users_dic[items.vk_user_id].sub_friends.forEach(function (sub_friend) {
-                            if (friend.id == sub_friend.user_id) {
-                                friend.checked = "checked";
+                    if (items.vk_user_id!= undefined) {
+                        log(items.vk_user_id);
+                        log(items.users_dic);
+                        getFriendsAsync(items.vk_user_id, "photo_50", items.users_dic[items.vk_user_id].vkaccess_token, function (friends) {
+                            var mod_friends = friends.map(function (friend) {
+                                items.users_dic[items.vk_user_id].sub_friends.forEach(function (sub_friend) {
+                                    if (friend.id == sub_friend.user_id) {
+                                        friend.checked = "checked";
+                                    }
+                                    //log(friend.user_id + sub_friend.user_id)
+                                });
+                                return friend;
+                            });
+                            msg = {
+                                message: "returnFriends",
+                                friends: mod_friends,
                             }
-                            //log(friend.user_id + sub_friend.user_id)
+                            port.postMessage(msg);
                         });
-                        return friend;
-                    });
-                    msg = {
-                        message: "returnFriends",
-                        friends: mod_friends,
+                    }else{
+                        msg = {
+                                message: "returnFriends",
+                                friends: {},
+                            }
+                            port.postMessage(msg);
                     }
-                    port.postMessage(msg);
                 });
 
             }
@@ -107,12 +118,47 @@ chrome.extension.onConnect.addListener(function (port) {
                 }, function () {
                     log("Current user changed to - " + msg.user_id);
                     UpdateContextMenu();
+                    var response = {
+                        message: "userChange",
+                    }
+                    port.postMessage(response);
                 });
             }
             break;
         case "refreshUser":
             {
-                vkAuthorizationDialog();
+                vkAuthorizationDialog(function () {
+                    UpdateContextMenu();
+                    var response = {
+                        message: "userRefresh",
+                    }
+                    port.postMessage(response);
+
+                });
+
+            }
+            break;
+        case "deleteUser":
+            {
+                log(msg.user_id);
+                chrome.storage.local.get(['users_dic', 'vk_user_id'],
+                    function (result) {
+                        delete result.users_dic[msg.user_id];
+                        log(result.vk_user_id);
+                        if (result.vk_user_id == msg.user_id) {
+                            chrome.storage.local.remove('vk_user_id');
+                        }
+                    log(result);
+                        chrome.storage.local.set({
+                            'users_dic':result.users_dic
+                        }, function () {
+                                                    UpdateContextMenu();
+                            var response = {
+                                message: "userDelete",
+                            }
+                            port.postMessage(response);
+                        });
+                    });
             }
             break;
         }
@@ -177,7 +223,7 @@ function sendMessageToFriend(data, user_id, vkaccess_token) {
     xhr.send();
 }
 
-function getFriends(user_id, fields, vkaccess_token) {
+function getFriendsAsync(user_id, fields, vkaccess_token, func) {
     var xhr = new XMLHttpRequest();
     var req = createVkApiRequest('friends.get', {
         user_id: user_id,
@@ -187,14 +233,18 @@ function getFriends(user_id, fields, vkaccess_token) {
         v: '5.62'
     });
     //chrome.tabs.create({url:req,selected:true});
-    xhr.open('GET', req, false);
+    xhr.open('GET', req, true);
+    xhr.onload = function () {
+        func(JSON.parse(xhr.responseText).response.items);
+    }
     xhr.send(null);
     //log(xhr.responseText);
-    return JSON.parse(xhr.responseText).response.items;
+
+    //return JSON.parse(xhr.responseText).response.items;
 }
 
 
-function vkAuthorizationDialog() {
+function vkAuthorizationDialog(after) {
     var vkAuthenticationUrl = createRequest('https://oauth.vk.com/authorize', {
         client_id: vkCLientId,
         scope: vkRequestedScopes,
@@ -213,12 +263,12 @@ function vkAuthorizationDialog() {
         //log("wnd=" + wnd);
         chrome.tabs.getSelected(wnd.id, function (tab) {
             //log("tab=" + tab.id);
-            chrome.tabs.onUpdated.addListener(listenerHandler(tab.id));
+            chrome.tabs.onUpdated.addListener(listenerHandler(tab.id, after));
         });
     });
 }
 
-function listenerHandler(authenticationTabId) {
+function listenerHandler(authenticationTabId, after) {
     "use strict";
 
     return function tabUpdateListener(tabId, changeInfo) {
@@ -265,17 +315,30 @@ function listenerHandler(authenticationTabId) {
 
                         } else {
                             var userProfile = JSON.parse(this.response).response;
+
                             chrome.storage.local.get('users_dic', function (result) {
                                 if (result.users_dic == undefined) {
                                     result.users_dic = {};
+
                                 }
-                                result.users_dic[user_id] = {
-                                    'vkaccess_token': vkAccessToken,
-                                    'sub_friends': [],
-                                    'first_name': userProfile.first_name,
-                                    'last_name': userProfile.last_name,
-                                    //'photo_50': userProfile.photo_50
-                                };
+
+                                if (result.users_dic[user_id]) {
+                                    result.users_dic[user_id] = {
+                                        'vkaccess_token': vkAccessToken,
+                                        'sub_friends': result.users_dic[user_id].sub_friends,
+                                        'first_name': userProfile.first_name,
+                                        'last_name': userProfile.last_name,
+                                    }
+                                } else {
+                                    result.users_dic[user_id] = {
+                                        'vkaccess_token': vkAccessToken,
+                                        'sub_friends': [],
+                                        'first_name': userProfile.first_name,
+                                        'last_name': userProfile.last_name,
+                                        //'photo_50': userProfile.photo_50
+                                    };
+                                }
+
                                 log(result.users_dic[user_id]);
                                 log("User name - " + userProfile.first_name + ' ' + userProfile.last_name);
                                 chrome.storage.local.set({
@@ -285,7 +348,8 @@ function listenerHandler(authenticationTabId) {
                                     chrome.windows.getLastFocused(null, function (wnd) {
                                         chrome.tabs.getSelected(wnd.id, function (tab) {
                                             chrome.tabs.remove(tab.id, function () {
-
+                                                if (after)
+                                                    setTimeout(after, 0);
                                             });
                                         });
                                     });
@@ -432,6 +496,13 @@ function getClickHandler(usr) {
                     getImage.send();
                 }
                 break;
+            case "video":
+                {
+                    sendMessageToFriend({
+                        "message": info.srcUrl,
+                        //attachment: ""
+                    }, usr, items.users_dic[items.vk_user_id].vkaccess_token);
+                }
             }
             // -----------------------
 
@@ -466,7 +537,7 @@ function UpdateContextMenu() {
                 'vk_user_id'
                 ], function (items) {
             try {
-                //log(items.vk_user_id);
+                log("id in context "+items.vk_user_id);
                 //log(items.users_dic);
                 //log(items.users_dic[items.vk_user_id]);
                 parents.forEach(function (parent) {
@@ -489,7 +560,7 @@ function UpdateContextMenu() {
             } catch (err) {
 
                 log(err.message);
-                vkAuthorizationDialog();
+
             }
         });
 

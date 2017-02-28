@@ -9,7 +9,9 @@ body {
     overflow-y: scroll;
     max-height: 400px;
 }
+#refresh_user{
 
+}
 .friend {
     padding-bottom: 10px;
     padding-top: 10px;
@@ -22,17 +24,17 @@ hr {
 label {
     display: block;
     margin: 0;
-    transition: 0.1s all;
+    transition: 0.3s all;
 }
 
 label:hover {
-    background-color: #dff0d8;
-    transition: 0.3s all;
+    background-color: #dff0d8;S
+    transition: 0.5s all;
 }
 
-label:checked {
-    width: 30px;
-    transition: 0.3s all;
+input:checked+.account_row{
+    background-color: #5cb85c;
+    transition: 0.6s all;
 }
 
 .row {

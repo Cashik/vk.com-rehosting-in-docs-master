@@ -17,5 +17,6 @@
     "homepage_url": "http://crea7or.spb.ru",
     "name": "vk.com rehosting",
     "permissions": ["contextMenus", "tabs", "storage", "http://*/*", "https://*/*"],
-    "version": "1.0.3"
+    "version": "1.0.3",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

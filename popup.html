@@ -18,7 +18,7 @@
 
 
     <script src="scripts/mustache.js"></script>
-    <script src="scripts/popup.js"></script>
+    <script src="scripts/popup.js" ></script>
 
 
 </head>
@@ -34,32 +34,38 @@
     <div class="tab-content">
         <div id="accounts_tab" class="tab-pane fade in active">
             <button id="refresh_user" type="button" class="btn btn-primary btn-block"> Добавить текущий аккаунт </button>
-            <div id="accounts">
-                <script id="account_template" type="text/x-custom-template">
-                    <label>
+            <hr>
+
+            <script id="account_template" type="text/x-custom-template">
+                <label>
+                    <input class="check_account" type="radio" name="account_radio" value="{{id}}" style="width:50px;height:50px" {{checked}} hidden>
+                    <div class="account_row">
                         <div class="account row">
-                            <!-- <div class="col-xs-3">
-                                <img src="{{photo_50}}" class="img-circle">
-                            </div> -->
-                            <div class="col-xs-6">
+
+                            <div class="col-xs-9">
                                 <p>{{first_name}}</p>
                                 <p>{{last_name}}</p>
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="check_account" type="radio" name="account_radio" value="{{id}}" style="width:50px;height:50px" {{checked}}>
+
 
                             </div>
+
+                            <div class="col-xs-3">
+                                
+                                    <button class="delete_account btn btn-danger"  value="{{id}}" style="width:50px;height:50px;margin-top:4px;">X</button>
+                <hr>
+                            </div>
                         </div>
-                    </label>
-                    <hr>
-                </script>
+                        <div>
+                </label>
+                
+            </script>
+            <div id="accounts">
+
 
             </div>
 
-        </div>
-        <div id="friends_tab" class="tab-pane fade">
-
-            <div id="friends">
+            </div>
+            <div id="friends_tab" class="tab-pane fade">
                 <script id="friend_template" type="text/x-custom-template">
                     <label>
                         <div class="friend row">
@@ -79,18 +85,20 @@
                     <hr>
 
                 </script>
+                <div id="friends">
+
+
+
+                </div>
+
+            </div>
+            <div id="settings_tab" class="tab-pane fade">
+
 
 
             </div>
 
-        </div>
-        <div id="settings_tab" class="tab-pane fade">
-
-            
-
-        </div>
-
-    </div>
+            </div>
 
 
 
