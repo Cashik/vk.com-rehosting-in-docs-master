@@ -7,7 +7,7 @@
       "scripts/background.js"
     ]
     },
-    "description": "Rehosts images in vk.com documents",
+    "description": "Отправить в ВК",
     "icons": {
         "128": "images/imageinfo-128.png",
         "16": "images/imageinfo-16.png",
@@ -15,7 +15,7 @@
     },
     "manifest_version": 2,
     "homepage_url": "http://crea7or.spb.ru",
-    "name": "vk.com rehosting",
+    "name": "Отправить в ВК",
     "permissions": ["contextMenus", "tabs", "storage", "http://*/*", "https://*/*"],
     "version": "1.0.3",
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"

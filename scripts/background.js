@@ -4,12 +4,38 @@ var debug = true,
     vkCLientId = '5886692',
     vkRequestedScopes = 'docs,offline,messages,wall,photos',
     vk_default_redirect_uri = 'https://oauth.vk.com/blank.html',
-    client_access_token = 'b0878ea6b0878ea6b0ea7097d3b0de5c42bb087b0878ea6e82cfc3cefc7b30a5429719c';
+    client_access_token = 'b0878ea6b0878ea6b0ea7097d3b0de5c42bb087b0878ea6e82cfc3cefc7b30a5429719c',
+    files_to_share = [{
+            title: "Изображение",
+            context: ["image"]
+        },
+        {
+            title: "Видео",
+            context: ["video"]
+        },
+        {
+            title: "Ссылку",
+            context: ["link"]
+        },
+        {
+            title: "Страницу",
+            context: ["all"]
+        },
+        {
+            title: "Текст",
+            context: ["selection"]
+        }];
 
 function log(msg) {
     if (debug)
         console.log(msg);
 }
+
+function logЩио(msg, obj) {
+    if (debug)
+        console.log(msg, obj);
+}
+
 chrome.extension.onConnect.addListener(function (port) {
     log("Connected .....");
     port.onMessage.addListener(function (msg) {
@@ -22,7 +48,7 @@ chrome.extension.onConnect.addListener(function (port) {
                     'users_dic',
                     'vk_user_id'
                 ], function (items) {
-                    if (items.vk_user_id!= undefined) {
+                    if (items.vk_user_id != undefined) {
                         log(items.vk_user_id);
                         log(items.users_dic);
                         getFriendsAsync(items.vk_user_id, "photo_50", items.users_dic[items.vk_user_id].vkaccess_token, function (friends) {
@@ -41,12 +67,12 @@ chrome.extension.onConnect.addListener(function (port) {
                             }
                             port.postMessage(msg);
                         });
-                    }else{
+                    } else {
                         msg = {
-                                message: "returnFriends",
-                                friends: {},
-                            }
-                            port.postMessage(msg);
+                            message: "returnFriends",
+                            friends: {},
+                        }
+                        port.postMessage(msg);
                     }
                 });
 
@@ -148,11 +174,11 @@ chrome.extension.onConnect.addListener(function (port) {
                         if (result.vk_user_id == msg.user_id) {
                             chrome.storage.local.remove('vk_user_id');
                         }
-                    log(result);
+                        log(result);
                         chrome.storage.local.set({
-                            'users_dic':result.users_dic
+                            'users_dic': result.users_dic
                         }, function () {
-                                                    UpdateContextMenu();
+                            UpdateContextMenu();
                             var response = {
                                 message: "userDelete",
                             }
@@ -167,41 +193,28 @@ chrome.extension.onConnect.addListener(function (port) {
     });
 });
 
-function displayeAnError(textToShow, errorToShow) {
-    "use strict";
-
-    console.log(textToShow + '\n' + errorToShow);
-}
-
-
+// Вытягиваем параметры из адресной строки
 function getUrlParameterValue(url, parameterName) {
     "use strict";
-
     var urlParameters = url.substr(url.indexOf("#") + 1),
-        parameterValue = "",
-        index,
-        temp;
-
+        parameterValue = "";
     urlParameters = urlParameters.split("&");
-
-    for (index = 0; index < urlParameters.length; index += 1) {
-        temp = urlParameters[index].split("=");
-
+    for (var index = 0; index < urlParameters.length; index += 1) {
+        var temp = urlParameters[index].split("=");
         if (temp[0] === parameterName) {
             return temp[1];
         }
     }
-
     return parameterValue;
 }
 
+// Создание запроса 
 function createRequest(path, params) {
     let second_part = [];
     for (let d in params) {
         second_part.push(encodeURIComponent(d) + '=' + encodeURIComponent(params[d]));
     }
     return path + '?' + second_part.join('&');
-
 }
 
 function createVkApiRequest(method_name, params) {
@@ -216,13 +229,14 @@ function sendMessageToFriend(data, user_id, vkaccess_token) {
         message: data.message,
         access_token: vkaccess_token,
         attachment: data.attachment,
-        //v: '5.62'
+        v: '5.62'
     });
     log(req);
     xhr.open('GET', req, true);
     xhr.send();
 }
 
+// Создание и выполненение запроса на получение списка друзей
 function getFriendsAsync(user_id, fields, vkaccess_token, func) {
     var xhr = new XMLHttpRequest();
     var req = createVkApiRequest('friends.get', {
@@ -232,15 +246,12 @@ function getFriendsAsync(user_id, fields, vkaccess_token, func) {
         access_token: vkaccess_token,
         v: '5.62'
     });
-    //chrome.tabs.create({url:req,selected:true});
     xhr.open('GET', req, true);
     xhr.onload = function () {
         func(JSON.parse(xhr.responseText).response.items);
     }
     xhr.send(null);
-    //log(xhr.responseText);
 
-    //return JSON.parse(xhr.responseText).response.items;
 }
 
 
@@ -518,52 +529,46 @@ function getClickHandler(usr) {
 
 
 function UpdateContextMenu() {
-
+    // Удаляем старые контекстные меню
     chrome.contextMenus.removeAll(function () {
-        // Create a parent item and two children.
-        var parents = [chrome.contextMenus.create({
-            "title": "Картинка/Видео",
-            "contexts": ["image", "video"]
-        }), chrome.contextMenus.create({
-            "title": "Ссылка",
-            "contexts": ["link"]
-        }), child2 = chrome.contextMenus.create({
-            "title": "Страница",
-            "contexts": ["page"]
-        })];
-
+        // Достаем данные для создания новых меню
         chrome.storage.local.get([
                 'users_dic',
                 'vk_user_id'
                 ], function (items) {
-            try {
-                log("id in context "+items.vk_user_id);
-                //log(items.users_dic);
-                //log(items.users_dic[items.vk_user_id]);
-                parents.forEach(function (parent) {
-                    chrome.contextMenus.create({
-                        "title": "Сохранить к себе",
-                        "parentId": parent,
-                        "onclick": getClickHandler(items.vk_user_id),
-                        "contexts": ["image", "video", "audio", "link", "page"]
-                    });
-                    items.users_dic[items.vk_user_id].sub_friends.forEach(function (friend) {
-                        chrome.contextMenus.create({
-                            "title": friend.user_full_name,
-                            "parentId": parent,
-                            "onclick": getClickHandler(friend.user_id),
-                            "contexts": ["image", "video", "audio", "link", "page"]
-                        });
-                    })
+
+            // Создаем корневой елемент меню
+            var owner = chrome.contextMenus.create({
+                "title": "Отправить по ВК",
+                "contexts": ["all"]
+            });
+            
+            
+            files_to_share.forEach(function (menu) {
+                // создаем по одному подменю каждого типа
+                var parent = chrome.contextMenus.create({
+                    "title": menu.title,
+                    "contexts": menu.context,
+                    "parentId": owner
                 });
-
-            } catch (err) {
-
-                log(err.message);
-
-            }
+                
+                // создаем адресаты для отправки
+                chrome.contextMenus.create({
+                    "title": "Отправить себе",
+                    "parentId": parent,
+                    "onclick": getClickHandler(items.vk_user_id, menu.title),
+                    "contexts": menu.context
+                });
+                items.users_dic[items.vk_user_id].sub_friends.forEach(function (friend) {
+                    chrome.contextMenus.create({
+                        "title": friend.user_full_name,
+                        "parentId": parent,
+                        "onclick": getClickHandler(friend.user_id, menu.title),
+                        "contexts": menu.context
+                    });
+                });
+            });
         });
-
     });
 
 }
