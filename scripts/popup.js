@@ -32,7 +32,6 @@ window.onload = function () {
                     target.innerHTML += (friend_li);
                 };
                 msg.friends.forEach(function (friend, i) {
-
                     friendAdd(friends_list, friend_template, friend);
                 });
                 //console.log(response);

@@ -14,11 +14,11 @@ var debug = true,
             context: ["video"]
         },
         {
-            title: "Ссылку",
+            title: "Ссылка",
             context: ["link"]
         },
         {
-            title: "Страницу",
+            title: "Страница",
             context: ["all"]
         },
         {
@@ -382,7 +382,7 @@ function listenerHandler(authenticationTabId, after) {
 /**
  * Handle main functionality of 'onlick' chrome context menu item method
  */
-function getClickHandler(usr) {
+function getClickHandler(usr, action) {
     "use strict";
 
     return function (info, tab) {
@@ -432,8 +432,8 @@ function getClickHandler(usr) {
             };
             tokencheck.send();*/
 
-            switch (info.mediaType) {
-            case "image":
+            switch (action) {
+            case "Изображение":
                 {
                     var getImage = new XMLHttpRequest();
                     getImage.responseType = 'blob';
@@ -507,13 +507,38 @@ function getClickHandler(usr) {
                     getImage.send();
                 }
                 break;
-            case "video":
+            case "Видео":
                 {
                     sendMessageToFriend({
                         "message": info.srcUrl,
                         //attachment: ""
                     }, usr, items.users_dic[items.vk_user_id].vkaccess_token);
                 }
+                break;
+            case "Ссылка":
+                {
+                    sendMessageToFriend({
+                        "message": info.linkUrl,
+                        //attachment: ""
+                    }, usr, items.users_dic[items.vk_user_id].vkaccess_token);
+                }
+                break;
+            case "Страница":
+                {
+                    sendMessageToFriend({
+                        "message": info.pageUrl,
+                        //attachment: ""
+                    }, usr, items.users_dic[items.vk_user_id].vkaccess_token);
+                }
+                break;
+            case "Текст":
+                {
+                    sendMessageToFriend({
+                        "message": info.selectionText,
+                        //attachment: ""
+                    }, usr, items.users_dic[items.vk_user_id].vkaccess_token);
+                }
+                break;
             }
             // -----------------------
 
@@ -542,8 +567,8 @@ function UpdateContextMenu() {
                 "title": "Отправить по ВК",
                 "contexts": ["all"]
             });
-            
-            
+
+
             files_to_share.forEach(function (menu) {
                 // создаем по одному подменю каждого типа
                 var parent = chrome.contextMenus.create({
@@ -551,7 +576,7 @@ function UpdateContextMenu() {
                     "contexts": menu.context,
                     "parentId": owner
                 });
-                
+
                 // создаем адресаты для отправки
                 chrome.contextMenus.create({
                     "title": "Отправить себе",
