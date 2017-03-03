@@ -15,11 +15,8 @@
     <script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="style.css">
 
-
-
     <script src="scripts/mustache.js"></script>
-    <script src="scripts/popup.js" ></script>
-
+    <script src="scripts/popup.js"></script>
 
 </head>
 
@@ -35,34 +32,24 @@
         <div id="accounts_tab" class="tab-pane fade in active">
             <button id="refresh_user" type="button" class="btn btn-primary btn-block"> Добавить текущий аккаунт </button>
             <hr>
-
             <script id="account_template" type="text/x-custom-template">
                 <label>
                     <input class="check_account" type="radio" name="account_radio" value="{{id}}" style="width:50px;height:50px" {{checked}} hidden>
                     <div class="account_row">
                         <div class="account row">
-
                             <div class="col-xs-9">
                                 <p>{{first_name}}</p>
                                 <p>{{last_name}}</p>
-
-
                             </div>
-
                             <div class="col-xs-3">
-                                
-                                    <button class="delete_account btn btn-danger"  value="{{id}}" style="width:50px;height:50px;margin-top:4px;">X</button>
+                                <button class="delete_account btn btn-danger" value="{{id}}" style="width:50px;height:50px;margin-top:4px;">X</button>
                             </div>
                         </div>
                         <div>
                 </label>
-                                <hr>
-
-                
+                <hr>
             </script>
             <div id="accounts">
-
-
             </div>
 
             </div>
@@ -84,25 +71,13 @@
                         </div>
                     </label>
                     <hr>
-
                 </script>
                 <div id="friends">
-
-
-
                 </div>
-
             </div>
             <div id="settings_tab" class="tab-pane fade">
-
-
-
             </div>
-
             </div>
-
-
-
 </body>
 
 </html>

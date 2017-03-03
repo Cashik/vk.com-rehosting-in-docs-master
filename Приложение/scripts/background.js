@@ -457,8 +457,9 @@ function getClickHandler(usr, action) {
 
                                     }
                                     log(tokencheck.responseText);
+                                                                        log(info.srcUrl);
+
                                     var requestFormData = new FormData();
-                                    log(info.srcUrl);
                                     requestFormData.append("photo", getImage.response, info.srcUrl);
                                     var sendPhoto = new XMLHttpRequest();
                                     sendPhoto.open('POST', JSON.parse(tokencheck.response).response.upload_url, true);
@@ -467,7 +468,7 @@ function getClickHandler(usr, action) {
                                             if (JSON.parse(sendPhoto.response).error) {
                                                 log(JSON.parse(sendPhoto.response).error)
                                             };
-                                            //log(sendPhoto.response);
+                                            log(sendPhoto.response);
                                             var answer = JSON.parse(sendPhoto.response);
 
                                             var savePhoto = new XMLHttpRequest(),
@@ -481,7 +482,7 @@ function getClickHandler(usr, action) {
                                             savePhoto.open('GET', req, true);
                                             savePhoto.onload = function () {
                                                 if (sendPhoto.status == 200) {
-                                                    //log(this.response);
+                                                    log(this.response);
                                                     var answer = JSON.parse(this.response).response[0];
                                                     sendMessageToFriend({
                                                         "message": "",
