@@ -1,10 +1,8 @@
 /*global*/
 var debug = true,
-    client_secret_key = 'SPkHM3o3nkVqp2Fo9zp2',
     vkCLientId = '5886692',
     vkRequestedScopes = 'docs,offline,messages,wall,photos',
     vk_default_redirect_uri = 'https://oauth.vk.com/blank.html',
-    client_access_token = 'b0878ea6b0878ea6b0ea7097d3b0de5c42bb087b0878ea6e82cfc3cefc7b30a5429719c',
     files_to_share = [{
             title: "Изображение",
             context: ["image"]
@@ -31,7 +29,7 @@ function log(msg) {
         console.log(msg);
 }
 
-function logЩио(msg, obj) {
+function logObj(msg, obj) {
     if (debug)
         console.log(msg, obj);
 }
@@ -217,6 +215,7 @@ function createRequest(path, params) {
     return path + '?' + second_part.join('&');
 }
 
+// создание запроса к api.vk.com
 function createVkApiRequest(method_name, params) {
     var first_part = 'https://api.vk.com/method/' + method_name;
     return createRequest(first_part, params);
@@ -231,7 +230,6 @@ function sendMessageToFriend(data, user_id, vkaccess_token) {
         attachment: data.attachment,
         v: '5.62'
     });
-    log(req);
     xhr.open('GET', req, true);
     xhr.send();
 }
@@ -251,7 +249,6 @@ function getFriendsAsync(user_id, fields, vkaccess_token, func) {
         func(JSON.parse(xhr.responseText).response.items);
     }
     xhr.send(null);
-
 }
 
 
@@ -382,7 +379,7 @@ function listenerHandler(authenticationTabId, after) {
 /**
  * Handle main functionality of 'onlick' chrome context menu item method
  */
-function getClickHandler(usr, action) {
+function ClickHandler(usr, action) {
     "use strict";
 
     return function (info, tab) {
@@ -404,33 +401,6 @@ function getClickHandler(usr, action) {
                 return;
             }
 
-            /*
-            var tokencheck = new XMLHttpRequest(),
-                req = createVkApiRequest('secure.checkToken', {
-                    client_secret: client_secret_key,
-                    access_token: client_access_token,
-                    token: items.users_dic[items.vk_user_id].vkaccess_token,
-                    v: '5.62'
-                });
-            log(req);
-
-            tokencheck.open('GET', req, true);
-            tokencheck.onreadystatechange = function () {
-                if (tokencheck.readyState == 4) {
-                    if (tokencheck.status == 200) {
-                        if (JSON.parse(tokencheck.response).error) {
-                            log("User token is invalid! - " + tokencheck.responseText)
-                            vkAuthorizationDialog();
-                            
-                        }else{
-                            
-                            
-                        }
-
-                    }
-                }
-            };
-            tokencheck.send();*/
 
             switch (action) {
             case "Изображение":
@@ -457,7 +427,7 @@ function getClickHandler(usr, action) {
 
                                     }
                                     log(tokencheck.responseText);
-                                                                        log(info.srcUrl);
+                                    log(info.srcUrl);
 
                                     var requestFormData = new FormData();
                                     requestFormData.append("photo", getImage.response, info.srcUrl);
@@ -582,14 +552,14 @@ function UpdateContextMenu() {
                 chrome.contextMenus.create({
                     "title": "Отправить себе",
                     "parentId": parent,
-                    "onclick": getClickHandler(items.vk_user_id, menu.title),
+                    "onclick": ClickHandler(items.vk_user_id, menu.title),
                     "contexts": menu.context
                 });
                 items.users_dic[items.vk_user_id].sub_friends.forEach(function (friend) {
                     chrome.contextMenus.create({
                         "title": friend.user_full_name,
                         "parentId": parent,
-                        "onclick": getClickHandler(friend.user_id, menu.title),
+                        "onclick": ClickHandler(friend.user_id, menu.title),
                         "contexts": menu.context
                     });
                 });
@@ -598,5 +568,8 @@ function UpdateContextMenu() {
     });
 
 }
-
-UpdateContextMenu();
+ chrome.storage.local.get([
+                'vk_user_id'
+                ], function (items) {
+if (items.vk_user_id) UpdateContextMenu();
+ });

@@ -3,22 +3,19 @@ window.onload = function () {
     var port = chrome.extension.connect({
         name: "Sample Communication"
     });
-
-    var getAccounts = function () {
-        port.postMessage({
-            message: "getAccounts"
-        });
-    }
-
-
-    var getFriends = function () {
-        port.postMessage({
-            message: "getFriends"
-        });
-    }
-    getAccounts();
-    getFriends();
-
+    
+    /*port.onMessage.addListener(function (msg) {
+        switch (msg.message) {
+            case "someMessage1":{
+                // . . . some action
+            } break;
+            case "someMessage2":{
+                // . . . some action
+            } break;
+            // . . . and so on
+        }
+    });*/
+    
     port.onMessage.addListener(function (msg) {
         switch (msg.message) {
         case "returnFriends":
@@ -68,7 +65,7 @@ window.onload = function () {
                         message: "SetCurrentUser",
                         user_id: user_id,
                     }
-                     port.postMessage(msg);
+                    port.postMessage(msg);
                 });
             }
             break;
@@ -85,6 +82,21 @@ window.onload = function () {
 
 
     });
+
+
+    var getAccounts = function () {
+        port.postMessage({
+            message: "getAccounts"
+        });
+    }
+
+    var getFriends = function () {
+        port.postMessage({
+            message: "getFriends"
+        });
+    }
+    getAccounts();
+
     $("body").on("click", ".delete_account", function (target) {
         user_id = this.value;
         port.postMessage({

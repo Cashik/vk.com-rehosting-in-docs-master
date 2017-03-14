@@ -1,11 +1,16 @@
 {
+    "manifest_version": 2,
+    "name": "Отправить в ВК",
+    "version": "1.0.3",
+    // действия, при нажатии на иконку расширения
     "browser_action": {
         "default_popup": "popup.html"
     },
+    // скрипт, который выполняется в фоновом режиме
     "background": {
         "scripts": [
-      "scripts/background.js"
-    ]
+            "scripts/background.js"
+        ]
     },
     "description": "Отправить в ВК",
     "icons": {
@@ -13,10 +18,28 @@
         "16": "images/imageinfo-16.png",
         "48": "images/imageinfo-48.png"
     },
-    "manifest_version": 2,
-    "homepage_url": "http://crea7or.spb.ru",
-    "name": "Отправить в ВК",
-    "permissions": ["contextMenus", "tabs", "storage", "http://*/*", "https://*/*"],
-    "version": "1.0.3",
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    // права доступа для расширения
+    "permissions": ["contextMenus", "tabs", "storage", "https://*/*"]
 }
+
+
+
+/*
+{
+    // id текущего пользователя
+    'vk_user_id': '<ID_ТекущегоПользователя>',
+    // словарь, где ключ - это id пользователя
+    'users_dic': {
+        '<IDОдногоИзПользователейРасширения>':{
+            'first_name': '<ИмяПользователя>',
+            'last_name': '<ФамилияПользователя>',
+            'vkaccess_token':'<СекретныйКлючДоступа>',
+            // список адресатов пользователя
+            'sub_friends':{
+                'user_id': '<ID_Адресата>',
+                'user_full_name': 'ФИО_Адресата'
+            }
+        }  
+    },  
+}
+*/

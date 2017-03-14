@@ -22,9 +22,9 @@
 
 <body>
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#accounts_tab">Аккаунт</a></li>
+        <li class="active"><a data-toggle="tab" href="#accounts_tab">Аккаунты</a></li>
         <li><a data-toggle="tab" href="#friends_tab">Адресаты</a></li>
-        <li><a data-toggle="tab" href="#settings_tab">Настройки</a></li>
+        <!-- <li><a data-toggle="tab" href="#settings_tab">Настройки</a></li> -->
 
     </ul>
 
@@ -52,32 +52,32 @@
             <div id="accounts">
             </div>
 
-            </div>
-            <div id="friends_tab" class="tab-pane fade">
-                <script id="friend_template" type="text/x-custom-template">
-                    <label>
-                        <div class="friend row">
-                            <div class="col-xs-3">
-                                <img src="{{photo_50}}" class="img-circle">
-                            </div>
-                            <div class="col-xs-6">
-                                <p>{{first_name}}</p>
-                                <p>{{last_name}}</p>
-                            </div>
-                            <div class="col-xs-3">
-                                <input class="check_friend" type="checkbox" value="{{last_name}} {{first_name}} {{id}}" style="width:50px;height:50px" {{checked}}>
-
-                            </div>
+        </div>
+        <div id="friends_tab" class="tab-pane fade">
+            <script id="friend_template" type="text/x-custom-template">
+                <label>
+                    <div class="friend row">
+                        <div class="col-xs-3">
+                            <img src="{{photo_50}}" class="img-circle">
                         </div>
-                    </label>
-                    <hr>
-                </script>
-                <div id="friends">
-                </div>
+                        <div class="col-xs-6">
+                            <p>{{first_name}}</p>
+                            <p>{{last_name}}</p>
+                        </div>
+                        <div class="col-xs-3">
+                            <input class="check_friend" type="checkbox" value="{{last_name}} {{first_name}} {{id}}" style="width:50px;height:50px" {{checked}}>
+
+                        </div>
+                    </div>
+                </label>
+                <hr>
+            </script>
+            <div id="friends">
             </div>
-            <div id="settings_tab" class="tab-pane fade">
-            </div>
-            </div>
+        </div>
+        <div id="settings_tab" class="tab-pane fade">
+        </div>
+    </div>
 </body>
 
 </html>
