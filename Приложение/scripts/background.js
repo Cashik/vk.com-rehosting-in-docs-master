@@ -1,8 +1,10 @@
 /*global*/
 var debug = true,
+    //client_secret_key = 'SPkHM3o3nkVqp2Fo9zp2',
     vkCLientId = '5886692',
     vkRequestedScopes = 'docs,offline,messages,wall,photos',
     vk_default_redirect_uri = 'https://oauth.vk.com/blank.html',
+    //client_access_token = 'b0878ea6b0878ea6b0ea7097d3b0de5c42bb087b0878ea6e82cfc3cefc7b30a5429719c',
     files_to_share = [{
             title: "Изображение",
             context: ["image"]
